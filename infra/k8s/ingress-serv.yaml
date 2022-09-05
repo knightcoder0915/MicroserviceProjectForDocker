@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-serv
+  annotations:
+    kubernetes.io/ingress.class: nginx #class of ingress
+    nginx.ingress.kubernetes.io/use-regex: 'true' #this is for frontend to use regular exp of everything
+
+spec:
+  rules:
+  - host: myproj.com #base url
+    http:
+      paths:
+      - path: /api/v1/blog/post #endpoint
+        pathType: Prefix
+        backend:
+          service:
+            name: posts-serv 
+            port: 
+              number: 4001
+      - path: /api/v1/blog/post/?(.*)/comment #endpoint
+        pathType: Prefix
+        backend:
+          service:
+            name: comment-serv
+            port: 
+              number: 4002
+      - path: /api/v1/blog/query/post
+        pathType: Prefix
+        backend:
+          service:
+            name: query-serv
+            port: 
+              number: 4003
+      - path: /?(.*) #can take any expression
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-serv
+            port: 
+              number: 3000
+
+
+# myproj.com/api/v1/blog/post ->posts-serv:4001/api/v1/blog/post

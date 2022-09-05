@@ -1,0 +1,51 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+build:
+  local:
+    push: false #everytime we rebuild it will not push to docker hub since false
+  artifacts:
+    - image: tanvvv/posts
+      context: blogpost #foldername
+      docker:
+        dockerfile: Dockerfile
+      sync:  #trigger to build the above image
+        manual:
+          - dest: . #container ke andar jo file hain(working directory) and source ke file mein mis match hain then rebuild it
+            src: '*.js' #if there is any change in js file rebuild it
+    - image: tanvvv/comments
+      context: blogcomment #foldername
+      docker:
+        dockerfile: Dockerfile
+      sync:  #trigger to build the above image
+        manual:
+          - dest: . 
+            src: '*.js'
+    - image: tanvvv/query
+      context: QueryService #foldername
+      docker:
+        dockerfile: Dockerfile
+      sync:  #trigger to build the above image
+        manual:
+          - dest: . 
+            src: '*.js'
+    - image: tanvvv/eventbus
+      context: eventbus #foldername
+      docker:
+        dockerfile: Dockerfile
+      sync:  #trigger to build the above image
+        manual:
+          - dest: . 
+            src: '*.js'
+    - image: tanvvv/frontend
+      context: frontend #foldername
+      docker:
+        dockerfile: Dockerfile
+      sync:  #trigger to build the above image
+        manual:
+          - dest: . 
+            src: '*.js'      
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/* #all files
+

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query
+  labels:
+    app: query
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: query
+  template:
+    metadata:
+      labels:
+        app: query
+    spec:
+      containers:
+      - name: query
+        image: tanvvv/query
+        
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-serv
+spec:
+  selector:
+    app: query
+  ports:
+  - protocol: TCP
+    port: 4003 #service
+    targetPort: 4003 #pod
